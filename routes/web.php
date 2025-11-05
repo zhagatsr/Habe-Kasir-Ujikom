@@ -9,6 +9,8 @@ Route::get('/barang', [BarangController::class, 'index'])->name('barang.index');
 Route::post('/barang', [BarangController::class, 'store'])->name('barang.store');
 Route::put('/barang/{id}', [BarangController::class, 'update'])->name('barang.update');
 Route::delete('/barang/{id}', [BarangController::class, 'destroy'])->name('barang.destroy');
+Route::get('/barang/search', [BarangController::class, 'search'])->name('barang.search');
+
 
 
 Route::get('/', fn()=>redirect('/login'));
