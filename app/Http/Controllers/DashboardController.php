@@ -2,30 +2,28 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Barang;
-use App\Models\Transaksi;
-use Illuminate\Support\Carbon;
+use App\Models\Barang; // pastikan model sudah di-import
+use Illuminate\Http\Request;
 
 class DashboardController extends Controller
 {
     public function index()
     {
-        $today      = Carbon::today();
-        $monthStart = Carbon::now()->startOfMonth();
+        // Ambil data barang untuk ditampilkan di dashboard
+        $barang = Barang::all();
 
-        $jumlahBarang          = Barang::count();
-        $totalTransaksiHariIni = Transaksi::whereDate('tanggal', $today)->count();
-        $totalPenjualanHariIni = Transaksi::whereDate('tanggal', $today)->sum('total_harga');
-        $penjualanBulanIni     = Transaksi::where('tanggal','>=',$monthStart)->sum('total_harga');
-
-        $aktivitas = Transaksi::orderByDesc('tanggal')->take(10)->get();
+        // Data statistik lain (opsional, sesuaikan punyamu)
+        $totalTransaksiHariIni = 0;
+        $totalPenjualanHariIni = 0;
+        $jumlahBarang = $barang->count();
+        $penjualanBulanIni = 0;
 
         return view('dashboard', compact(
-            'jumlahBarang',
+            'barang',
             'totalTransaksiHariIni',
             'totalPenjualanHariIni',
-            'penjualanBulanIni',
-            'aktivitas'
+            'jumlahBarang',
+            'penjualanBulanIni'
         ));
     }
 }

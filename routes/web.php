@@ -3,6 +3,13 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\BarangController;
+
+Route::get('/barang', [BarangController::class, 'index'])->name('barang.index');
+Route::post('/barang', [BarangController::class, 'store'])->name('barang.store');
+Route::put('/barang/{id}', [BarangController::class, 'update'])->name('barang.update');
+Route::delete('/barang/{id}', [BarangController::class, 'destroy'])->name('barang.destroy');
+
 
 Route::get('/', fn()=>redirect('/login'));
 

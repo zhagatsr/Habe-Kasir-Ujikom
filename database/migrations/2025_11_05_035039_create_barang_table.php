@@ -11,6 +11,8 @@ Schema::create('barang', function (Blueprint $t) {
     $t->string('nama_barang', 120);
     $t->decimal('harga', 12, 0);
     $t->integer('stok')->default(0);
+    $table->string('foto')->nullable();
+
     $t->timestamps();
 });
 
