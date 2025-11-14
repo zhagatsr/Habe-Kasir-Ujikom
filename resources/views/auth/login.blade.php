@@ -150,6 +150,30 @@
       from { opacity: 0; transform: translateY(-4px); }
       to { opacity: 1; transform: translateY(0); }
     }
+    /* === shimmer glow lembut untuk login box === */
+.login-card {
+  position: relative;
+  overflow: hidden; /* biar shimmer gak keluar kotak */
+}
+
+.login-card::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -60%;
+  width: 40%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(19,70,134,0.15), transparent);
+  filter: blur(6px) brightness(1.2);
+  animation: shimmerGlow 3.5s linear infinite;
+  pointer-events: none;
+}
+
+@keyframes shimmerGlow {
+  0% { left: -60%; }
+  100% { left: 160%; }
+}
+
   </style>
 </head>
 

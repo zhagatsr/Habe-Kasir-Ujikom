@@ -14,6 +14,7 @@ Schema::create('barang', function (Blueprint $t) {
     $t->string('foto')->nullable();
 
     $t->timestamps();
+        $t->softDeletes();
 });
 
   }
