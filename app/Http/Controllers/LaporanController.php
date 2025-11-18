@@ -11,18 +11,18 @@ use Illuminate\Support\Facades\DB;
 
 class LaporanController extends Controller
 {
-    // ======== TAMPILKAN LAPORAN ========
+    
     public function index(Request $r)
     {
-        $tanggal = $r->input('tanggal'); // hanya satu input tanggal
+        $tanggal = $r->input('tanggal'); 
         $query = Transaksi::query();
 
-        // Jika user memilih tanggal tertentu
+        
         if ($tanggal) {
             $query->whereDate('tanggal', Carbon::parse($tanggal)->format('Y-m-d'));
         }
 
-        // Kalau tidak ada tanggal → tampil semua transaksi
+     
         $transaksi = $query->orderBy('tanggal', 'desc')->get();
 
         $totalTransaksi = $transaksi->count();

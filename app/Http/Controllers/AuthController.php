@@ -10,7 +10,7 @@ class AuthController extends Controller
 {
     public function loginPage()
     {
-        return view('auth.login'); // kita pakai mentahan HTML-mu (lihat step View)
+        return view('auth.login'); 
     }
 
     public function login(Request $r)

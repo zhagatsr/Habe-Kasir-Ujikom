@@ -7,9 +7,9 @@ use App\Models\Barang;
 
 class BarangSeeder extends Seeder
 {
-    /**
-     * Jalankan seeder.
-     */
+    
+     
+     
     public function run(): void
     {
         $data = [

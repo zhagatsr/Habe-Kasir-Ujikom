@@ -7,9 +7,9 @@ use Illuminate\Support\Facades\Schema;
 return new class extends Migration {
     public function up(): void {
         Schema::create('detail_transaksi', function (Blueprint $t) {
-            $t->unsignedInteger('id_detailTransaksi', true);
+            $t->bigIncrements('id_detailTransaksi');
             $t->unsignedInteger('id_transaksi');
-            $t->unsignedInteger('id_barang');
+            $t->unsignedBigInteger('id_barang');
             $t->integer('jumlah');
             $t->decimal('subtotal', 14, 0);
             $t->timestamps();
@@ -21,7 +21,7 @@ return new class extends Migration {
 
             $t->foreign('id_barang')
               ->references('id_barang')
-              ->on('barang');
+              ->on('barang')->cascadeOnDelete();
         });
     }
     public function down(): void {

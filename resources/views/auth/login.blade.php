@@ -150,10 +150,10 @@
       from { opacity: 0; transform: translateY(-4px); }
       to { opacity: 1; transform: translateY(0); }
     }
-    /* === shimmer glow lembut untuk login box === */
+    
 .login-card {
   position: relative;
-  overflow: hidden; /* biar shimmer gak keluar kotak */
+  overflow: hidden; 
 }
 
 .login-card::before {

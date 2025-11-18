@@ -1,3 +1,5 @@
+<script src="https://cdn.jsdelivr.net/npm/tsparticles@3/tsparticles.bundle.min.js"></script>
+
 <style>
   /* ==== APP NAVBAR (prefiks hk- agar tidak bentrok Bootstrap) ==== */
   .hk-navbar{
@@ -40,10 +42,13 @@
   position: relative;
 }
 
+/* ==== HOVER MEGA-POPPY ==== */
 .sidebar-menu li:hover {
-  transform: translateX(6px) scale(1.05);
-  background: linear-gradient(90deg, rgba(19,70,134,0.15), rgba(19,70,134,0.25));
-  box-shadow: 0 4px 10px rgba(19,70,134,0.25);
+  transform: translateX(10px) scale(1.07);
+  background: rgba(19, 70, 134, 0.18);
+  box-shadow: 0 6px 16px rgba(19,70,134,0.28);
+  border-left: 4px solid var(--primary);
+  backdrop-filter: blur(2px);
 }
 
 /* Aktif tetap beda warna tapi lembut */

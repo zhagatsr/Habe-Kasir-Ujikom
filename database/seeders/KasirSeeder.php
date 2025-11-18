@@ -11,10 +11,10 @@ class KasirSeeder extends Seeder
     {
         // akun login utama
         Kasir::updateOrCreate(
-            ['username' => 'kasir'], // unique
+            ['username' => 'kasir'], 
             [
                 'nama'     => 'Kasir',
-                'password' => bcrypt('12345'), // ganti nanti di menu ganti password
+                'password' => bcrypt('12345'), 
             ]
         );
     }

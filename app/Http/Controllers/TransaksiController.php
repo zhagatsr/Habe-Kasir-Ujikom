@@ -17,9 +17,9 @@ class TransaksiController extends Controller
         return collect($cart)->sum(fn($c) => $c['harga'] * $c['qty']);
     }
 
-    // ======================
-    // HALAMAN UTAMA TRANSAKSI
-    // ======================
+    
+    
+
     public function index(Request $r)
     {
         $q = trim((string)$r->q);
@@ -34,9 +34,9 @@ class TransaksiController extends Controller
         return view('transaksi.index', compact('produk', 'cart', 'total'));
     }
 
-    // ======================
-    // TAMBAH BARANG KE KERANJANG
-    // ======================
+    
+    
+    
     public function cartAdd(Request $r)
     {
         $barang = Barang::find($r->id_barang);
@@ -44,7 +44,7 @@ class TransaksiController extends Controller
             return response()->json(['success' => false]);
         }
 
-        // kalau stok 0, jangan bisa ditambahkan
+       
         if ($barang->stok <= 0) {
             return response()->json([
                 'success' => true,
@@ -58,7 +58,7 @@ class TransaksiController extends Controller
         if (isset($cart[$barang->id_barang])) {
             $currentQty = $cart[$barang->id_barang]['qty'];
 
-            // jika sudah mencapai stok maksimum, jangan tambah lagi
+          
             if ($currentQty >= $barang->stok) {
                 return response()->json([
                     'success' => true,
@@ -69,7 +69,7 @@ class TransaksiController extends Controller
 
             $cart[$barang->id_barang]['qty']++;
         } else {
-            // masukkan barang baru
+           
             $cart[$barang->id_barang] = [
                 'id_barang'   => $barang->id_barang,
                 'nama_barang' => $barang->nama_barang,
@@ -86,9 +86,9 @@ class TransaksiController extends Controller
         ]);
     }
 
-    // ======================
-    // TAMBAH JUMLAH (BTN +)
-    // ======================
+    
+    
+    
     public function cartInc(Request $r)
     {
         $cart = session('cart', []);
@@ -118,9 +118,9 @@ class TransaksiController extends Controller
         ]);
     }
 
-    // ======================
-    // KURANGI JUMLAH (BTN -)
-    // ======================
+    
+    
+    
     public function cartDec(Request $r)
     {
         $cart = session('cart', []);
@@ -139,9 +139,9 @@ class TransaksiController extends Controller
         ]);
     }
 
-    // ======================
-    // HAPUS ITEM DARI KERANJANG
-    // ======================
+    
+    
+    
     public function cartRemove(Request $r)
     {
         $cart = session('cart', []);
@@ -155,9 +155,9 @@ class TransaksiController extends Controller
         ]);
     }
 
-    // ======================
-    // UPDATE JUMLAH MANUAL (input)
-    // ======================
+    
+    
+    
     public function cartSetQty(Request $r)
     {
         $cart = session('cart', []);
@@ -166,7 +166,7 @@ class TransaksiController extends Controller
         $barang = Barang::find($id);
 
         if (isset($cart[$id]) && $barang) {
-            // batasi supaya tidak bisa melebihi stok
+            
             if ($qty > $barang->stok) {
                 $qty = $barang->stok;
             }
@@ -182,9 +182,9 @@ class TransaksiController extends Controller
         ]);
     }
 
-    // ======================
-    // CHECKOUT (SIMPAN TRANSAKSI)
-    // ======================
+    
+    
+    
    public function checkout(Request $r)
 {
     $cart = session('cart', []);
@@ -198,7 +198,7 @@ class TransaksiController extends Controller
 
     DB::beginTransaction();
     try {
-        // ====== 1️⃣ Simpan ke tabel transaksi ======
+        
         $trx = Transaksi::create([
             'no_transaksi' => 'TRX' . time(),
             'tanggal'      => Carbon::now(),
@@ -206,18 +206,18 @@ class TransaksiController extends Controller
             'total_harga'  => collect($cart)->sum(fn($c) => $c['harga'] * $c['qty']),
         ]);
 
-        // ====== 2️⃣ Simpan ke tabel detail_transaksi ======
+        
         foreach ($cart as $item) {
             DetailTransaksi::create([
                 'id_transaksi' => $trx->id_transaksi,
-    'id_barang'      => $item['id_barang'], // tetap simpan
-    'nama_barang'    => $item['nama_barang'], // fix disimpan
-    'harga_barang'   => $item['harga'],       // fix disimpan
+    'id_barang'      => $item['id_barang'], 
+    'nama_barang'    => $item['nama_barang'], 
+    'harga_barang'   => $item['harga'],       
     'jumlah'         => $item['qty'],
     'subtotal'       => $item['harga'] * $item['qty'],
 ]);
 
-            // ====== 3️⃣ Kurangi stok barang ======
+        
             $barang = Barang::find($item['id_barang']);
             if ($barang) {
                 $barang->decrement('stok', $item['qty']);
@@ -226,7 +226,7 @@ class TransaksiController extends Controller
 
         DB::commit();
 
-        // ====== 4️⃣ Hapus isi keranjang ======
+        
         session()->forget('cart');
 
         return redirect()->route('laporan.index')->with('success', 'Transaksi berhasil disimpan!');
@@ -236,9 +236,9 @@ class TransaksiController extends Controller
     }
 }
 
-    // ======================
-    // UPDATE JUMLAH MELALUI INPUT LANGSUNG
-    // ======================
+    
+    
+    
     public function cartUpdateQty(Request $r)
     {
         $id = $r->id_barang;
@@ -247,7 +247,7 @@ class TransaksiController extends Controller
         $barang = Barang::find($id);
 
         if (isset($cart[$id]) && $barang) {
-            // batasi supaya tidak bisa melebihi stok
+        
             if ($qty > $barang->stok) {
                 $qty = $barang->stok;
             }

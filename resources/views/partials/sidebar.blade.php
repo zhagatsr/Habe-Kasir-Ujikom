@@ -1,5 +1,8 @@
+
 <link href="https://unpkg.com/aos@2.3.4/dist/aos.css" rel="stylesheet">
 <script src="https://unpkg.com/aos@2.3.4/dist/aos.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/tsparticles@3/tsparticles.bundle.min.js"></script>
+
 
 <aside class="sidebar" id="sidebar" data-aos="slide-right" data-aos-duration="800">
   <ul class="sidebar-menu">

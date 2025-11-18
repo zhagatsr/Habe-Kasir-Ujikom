@@ -7,11 +7,10 @@ use Illuminate\Support\Facades\Schema;
 return new class extends Migration {
   public function up(): void {
 Schema::create('barang', function (Blueprint $t) {
-    $t->unsignedInteger('id_barang', true); // ← PK unsigned
+    $t->bigIncrements('id_barang');
     $t->string('nama_barang', 120);
     $t->decimal('harga', 12, 0);
     $t->integer('stok')->default(0);
-    $t->string('foto')->nullable();
 
     $t->timestamps();
         $t->softDeletes();

@@ -153,7 +153,7 @@
     .btn-primary-fig{background:var(--primary);color:#fff;border:0;border-radius:10px;padding:12px 14px;font-weight:700;width:100%}
     .btn-primary-fig:hover{filter:brightness(.95)}
 
-    .modal-backdrop{position:fixed;inset:0;background:rgba(28, 28, 83, 0.651);display:none;align-items:flex-end;z-index:50}
+    .modal-backdrop{position:fixed;inset:0;background:rgba(28, 28, 83, 0.651);display:none;align-items:center;z-index:50}
     .modal-backdrop.show{display:flex}
     .drawer{width:100%;background:#ffffff;border-top-left-radius:16px;border-top-right-radius:16px;padding:16px 16px 24px;box-shadow:0 -8px 24px rgb(253, 251, 251);max-width:600px;margin-inline:auto}
     .method-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px}
@@ -246,6 +246,34 @@
   border-bottom: 1px solid #E2E8F0;
 }
 
+/* FIX: Drawer muncul di tengah + backdrop lebih jelas */
+.modal-backdrop {
+  background: rgba(0, 0, 0, 0.55) !important;
+  display: none;
+  align-items: center !important; /* Tengah vertikal */
+  justify-content: center !important; /* Tengah horizontal */
+}
+
+.drawer {
+  border-radius: 16px;
+  box-shadow: 0 0 35px rgba(0, 0, 0, 0.25) !important;
+  width: 90%;
+  max-width: 450px !important;
+  padding: 20px;
+  animation: drawerCenter .3s ease;
+}
+
+/* Animasi dari kecil → normal */
+@keyframes drawerCenter {
+  from {
+    opacity: 0;
+    transform: scale(0.92);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
 
   </style>
 </head>
@@ -319,6 +347,21 @@
         <span class="total-value">Rp{{ number_format($total,0,',','.') }}</span>
       </div>
 
+      <!-- INPUT UANG MASUK -->
+<div class="total-line mt-2">
+  <span class="total-label">Uang Masuk</span>
+  <input type="number" id="uangMasuk" class="form-control" 
+         placeholder="Masukkan uang..." 
+         style="max-width:150px; text-align:right;">
+</div>
+
+<div class="total-line">
+  <span class="total-label">Kembalian</span>
+  <span id="kembalianValue" class="total-value">Rp0</span>
+</div>
+
+
+
       <div class="choose-trigger" id="openDrawer">
         <span>Metode Bayar</span>
         <span id="chosenLabel">{{ old('metode_bayar','Pilih Metode') }}</span>
@@ -327,7 +370,8 @@
       <form action="{{ route('transaksi.checkout') }}" method="POST" id="checkoutForm">
         @csrf
         <input type="hidden" name="metode_bayar" id="metodeBayarHidden">
-        <button type="submit" class="btn-primary-fig">Selesai / Simpan Transaksi</button>
+        <button type="button" id="btnCheckout" class="btn-primary-fig">Selesai / Simpan Transaksi</button>
+
       </form>
       <button type="button" id="btnPrintStruk" class="btn btn-outline-primary mt-2 w-100 fw-semibold" style="border-radius:10px;padding:10px 14px;">Cetak Struk</button>
 
@@ -393,6 +437,15 @@
   </div>
 </div>
 
+<div id="toast" 
+     style="position:fixed; top:-80px; left:50%; transform:translateX(-50%);
+     background:#ff4d4f; color:#fff; padding:14px 22px; 
+     border-radius:12px; font-weight:600; 
+     box-shadow:0 6px 20px rgba(0,0,0,.2);
+     transition:all .45s cubic-bezier(.4,0,.2,1); 
+     z-index:9999;">
+  Keranjang masih kosong! Silakan pilih barang dulu.
+</div>
 
 
 
@@ -505,6 +558,27 @@ document.querySelectorAll('.method-btn').forEach(btn => {
   };
 });
 
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.innerText = msg;
+  t.style.top = '20px';
+
+  setTimeout(() => {
+    t.style.top = '-80px';
+  }, 2500);
+}
+
+document.getElementById('btnCheckout').addEventListener('click', () => {
+  const rows = document.querySelectorAll('.cart-table tbody tr');
+  const isEmpty = rows.length === 1 && rows[0].innerText.includes('Keranjang kosong');
+
+  if (isEmpty) {
+    showToast("Keranjang masih kosong! Silakan pilih barang dulu.");
+    return;
+  }
+
+  document.getElementById('checkoutForm').submit();
+});
 
 </script>
 
@@ -557,6 +631,78 @@ document.getElementById('btnPrintStruk').onclick = function() {
 };
 </script>
 
+<script>
+document.getElementById("btnCheckout").addEventListener("click", function () {
+    const metode = document.getElementById("metodeBayarHidden").value;
+
+    // CEK: kalau belum dipilih
+    if (!metode) {
+        showToast("Pilih metode pembayaran atau isi keranjang terlebih dahulu!");
+        return;
+    }
+
+    // Kalau ada, langsung submit
+    document.getElementById("checkoutForm").submit();
+});
+
+
+// ==== FUNGSI TOAST (Gunakan toast yang udah ada) ====
+function showToast(msg) {
+    const toast = document.getElementById("toast");
+    toast.innerText = msg;
+    toast.style.top = "20px";
+
+    setTimeout(() => {
+        toast.style.top = "-80px";
+    }, 2000);
+}
+</script>
+
+<script>
+  function formatRupiah(angka) {
+    return "Rp" + angka.toLocaleString("id-ID");
+  }
+
+  const total = {{ $total }};
+  const uangInput = document.getElementById("uangMasuk");
+  const kembalianText = document.getElementById("kembalianDisplay");
+
+  uangInput.addEventListener("input", function () {
+    let uang = parseInt(uangInput.value || 0);
+    let kembali = uang - total;
+
+    if (kembali < 0) kembalianText.style.color = "#dc2626"; 
+    else kembalianText.style.color = "#16a34a";
+
+    kembalianText.textContent = formatRupiah(kembali);
+  });
+</script>
+
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+
+    const uangMasukInput = document.getElementById("uangMasuk");
+    const kembalianValue = document.getElementById("kembalianValue");
+
+    // Ambil total harga dari tampilan
+    const totalHargaText = document.querySelector(".total-value").innerText;
+    const totalHarga = parseInt(totalHargaText.replace(/[^0-9]/g, ""));
+
+    uangMasukInput.addEventListener("input", function () {
+        let uangMasuk = parseInt(this.value || 0);
+        let kembalian = uangMasuk - totalHarga;
+
+        if (kembalian < 0) {
+            kembalianValue.innerText = "Uang kurang!";
+            kembalianValue.style.color = "red";
+        } else {
+            kembalianValue.innerText = "Rp" + kembalian.toLocaleString("id-ID");
+            kembalianValue.style.color = "#134686";
+        }
+    });
+
+});
+</script>
 
 </body>
 </html>

@@ -7,7 +7,7 @@ use Illuminate\Support\Facades\Schema;
 return new class extends Migration {
   public function up(): void {
 Schema::create('kasir', function (Blueprint $t) {
-    $t->unsignedInteger('id_user', true);   // ← PK unsigned + auto increment
+    $t->unsignedInteger('id_user', true);   
     $t->string('nama', 100);
     $t->string('username', 50)->unique();
     $t->string('password');
